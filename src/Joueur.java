@@ -1,10 +1,10 @@
 import java.util.Scanner;
-import java.util.ArrayList; // Utilisation des Collections
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 
 public class Joueur {
     private String nom;
-    private ArrayList<Personnage> equipe; // Utilisation d'ArrayList
+    private ArrayList<Personnage> equipe;
     private static final int TAILLE_EQUIPE = 3;
 
     // Constructeur
@@ -15,12 +15,15 @@ public class Joueur {
 
     // Méthode pour créer l'équipe
     public void creerEquipe(Scanner scanner) {
-        System.out.println("\n" + nom + ", cree ton equipe de " + TAILLE_EQUIPE + " personnages :");
+        // Ajout d'une bordure ici pour la création d'équipe
+        System.out.println("---------------------------------------------");
+        System.out.println(nom + ", cree ton equipe de " + TAILLE_EQUIPE + " personnages :");
+        System.out.println("---------------------------------------------");
 
         for (int i = 0; i < TAILLE_EQUIPE; i++) {
             System.out.print("Nom du personnage " + (i + 1) + " : ");
             String nomPersonnage = scanner.nextLine();
-            equipe.add(new Personnage(nomPersonnage)); // Ajout a l'ArrayList
+            equipe.add(new Personnage(nomPersonnage));
         }
     }
 
@@ -28,7 +31,11 @@ public class Joueur {
     public Personnage choisirPersonnageVivant(Scanner scanner) {
 
         while (true) {
-            System.out.println("\n" + nom + ", choisis ton personnage attaquant :");
+            // NOUVELLE BORDURE pour le choix de l'attaquant
+            System.out.println("\n*********************************************");
+            System.out.println(nom + ", choisis ton personnage attaquant :");
+            System.out.println("*********************************************");
+
             afficherEquipePourChoix(this.equipe);
 
             try {
@@ -37,7 +44,7 @@ public class Joueur {
                 scanner.nextLine();
 
                 if (choix >= 1 && choix <= this.equipe.size()) {
-                    Personnage p = equipe.get(choix - 1); // get() de l'ArrayList
+                    Personnage p = equipe.get(choix - 1);
                     if (p.estVivant()) {
                         return p;
                     } else {
@@ -57,7 +64,11 @@ public class Joueur {
     public Personnage choisirCible(Joueur adversaire, Scanner scanner) {
 
         while (true) {
-            System.out.println("\n" + nom + ", choisis la cible chez " + adversaire.getNom() + " :");
+            // NOUVELLE BORDURE pour le choix de la cible
+            System.out.println("\n*********************************************");
+            System.out.println(nom + ", choisis la cible chez " + adversaire.getNom() + " :");
+            System.out.println("*********************************************");
+
             adversaire.afficherEquipePourChoix(adversaire.equipe);
 
             try {

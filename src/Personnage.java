@@ -1,7 +1,7 @@
 public class Personnage {
     private String nom;
     private int vie = 100;
-    private int attaque = 25; // Atak de baz 25
+    private int attaque = 25;
 
     public Personnage(String nom) {
         this.nom = nom;
@@ -17,7 +17,9 @@ public class Personnage {
             return;
         }
 
+        System.out.println("------------------------------------");
         System.out.println(nom + " attaque " + cible.nom + " !");
+
         cible.vie -= this.attaque;
 
         if (cible.vie < 0) {
@@ -26,14 +28,13 @@ public class Personnage {
 
         System.out.println("→ " + cible.nom + " perd " + attaque + " PV");
 
-        // --- AJOUT 1: Anonse lè sib la KO ---
         if (!cible.estVivant()) {
             System.out.println("💥 " + cible.nom + " est KO!");
         }
+        System.out.println("------------------------------------");
     }
 
 
-    // --- AJOUT 2: Modifikasyon afficherEtat() pou jere KO ---
     public void afficherEtat(){
         System.out.print(nom + " - ");
         if (estVivant()) {
