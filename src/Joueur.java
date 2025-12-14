@@ -1,104 +1,88 @@
 import java.util.Scanner;
+import java.util.ArrayList; // Utilisation des Collections
+import java.util.InputMismatchException;
 
 public class Joueur {
     private String nom;
-    private Personnage[] equipe;
+    private ArrayList<Personnage> equipe; // Utilisation d'ArrayList
+    private static final int TAILLE_EQUIPE = 3;
 
     // Constructeur
     public Joueur(String nom) {
         this.nom = nom;
-        this.equipe = new Personnage[3];
+        this.equipe = new ArrayList<>();
     }
 
     // Méthode pour créer l'équipe
     public void creerEquipe(Scanner scanner) {
-        System.out.println("\n" + nom + ", crée ton équipe :");
+        System.out.println("\n" + nom + ", cree ton equipe de " + TAILLE_EQUIPE + " personnages :");
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < TAILLE_EQUIPE; i++) {
             System.out.print("Nom du personnage " + (i + 1) + " : ");
             String nomPersonnage = scanner.nextLine();
-
-            // Création du personnage
-            equipe[i] = new Personnage(nomPersonnage);
+            equipe.add(new Personnage(nomPersonnage)); // Ajout a l'ArrayList
         }
     }
 
-    // Choisir un personnage vivant pour attaquer
+    // Méthode pour choisir un attaquant (personnage vivant)
     public Personnage choisirPersonnageVivant(Scanner scanner) {
-        System.out.println("\n" + nom + ", choisis ton personnage attaquant :");
 
-        // Afficher seulement les personnages vivants
-        int compteur = 1;
-        int[] indicesVivants = new int[3];
+        while (true) {
+            System.out.println("\n" + nom + ", choisis ton personnage attaquant :");
+            afficherEquipePourChoix(this.equipe);
 
-        for (int i = 0; i < equipe.length; i++) {
-            if (equipe[i].estVivant()) {
-                System.out.print(compteur + ". ");
-                equipe[i].afficherEtat(); // Utiliser afficherEtat() au lieu de getVie()
-                indicesVivants[compteur - 1] = i;
-                compteur++;
+            try {
+                System.out.print("Entre le numero (1-" + this.equipe.size() + ") : ");
+                int choix = scanner.nextInt();
+                scanner.nextLine();
+
+                if (choix >= 1 && choix <= this.equipe.size()) {
+                    Personnage p = equipe.get(choix - 1); // get() de l'ArrayList
+                    if (p.estVivant()) {
+                        return p;
+                    } else {
+                        System.out.println("🚫 Ce personnage est KO. Choisis-en un autre.");
+                    }
+                } else {
+                    System.out.println("Choix invalide!");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Entree invalide. S'il te plait, entre un numero.");
+                scanner.nextLine();
             }
         }
-
-        if (compteur == 1) {
-            System.out.println("Aucun personnage vivant !");
-            return null;
-        }
-
-        int choix;
-        do {
-            System.out.print("Entrez le numéro (1-" + (compteur - 1) + ") : ");
-            while (!scanner.hasNextInt()) {
-                System.out.println("Entrée invalide !");
-                scanner.next();
-            }
-            choix = scanner.nextInt();
-            scanner.nextLine(); // Consommer la nouvelle ligne
-
-            if (choix < 1 || choix >= compteur) {
-                System.out.println("Choix invalide !");
-            }
-        } while (choix < 1 || choix >= compteur);
-
-        return equipe[indicesVivants[choix - 1]];
     }
 
-    // Choisir une cible parmi l'adversaire
+    // Méthode pour choisir une cible chez l'adversaire
     public Personnage choisirCible(Joueur adversaire, Scanner scanner) {
-        System.out.println("\n" + nom + ", choisis la cible chez " + adversaire.getNom() + " :");
 
-        Personnage[] equipeAdversaire = adversaire.getEquipe();
-        int compteur = 1;
-        int[] indicesVivants = new int[3];
+        while (true) {
+            System.out.println("\n" + nom + ", choisis la cible chez " + adversaire.getNom() + " :");
+            adversaire.afficherEquipePourChoix(adversaire.equipe);
 
-        for (int i = 0; i < equipeAdversaire.length; i++) {
-            if (equipeAdversaire[i].estVivant()) {
-                System.out.print(compteur + ". ");
-                equipeAdversaire[i].afficherEtat(); // Utiliser afficherEtat() au lieu de getVie()
-                indicesVivants[compteur - 1] = i;
-                compteur++;
+            try {
+                System.out.print("Entre le numero (1-" + adversaire.equipe.size() + ") : ");
+                int choix = scanner.nextInt();
+                scanner.nextLine();
+
+                if (choix >= 1 && choix <= adversaire.equipe.size()) {
+                    Personnage cible = adversaire.equipe.get(choix - 1);
+                    if (cible.estVivant()) {
+                        return cible;
+                    } else {
+                        System.out.println("🚫 Cette cible est KO. Choisis-en une autre.");
+                    }
+                } else {
+                    System.out.println("Choix invalide!");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Entree invalide. S'il te plait, entre un numero.");
+                scanner.nextLine();
             }
         }
-
-        int choix;
-        do {
-            System.out.print("Entrez le numéro (1-" + (compteur - 1) + ") : ");
-            while (!scanner.hasNextInt()) {
-                System.out.println("Entrée invalide !");
-                scanner.next();
-            }
-            choix = scanner.nextInt();
-            scanner.nextLine(); // Consommer la nouvelle ligne
-
-            if (choix < 1 || choix >= compteur) {
-                System.out.println("Choix invalide !");
-            }
-        } while (choix < 1 || choix >= compteur);
-
-        return equipeAdversaire[indicesVivants[choix - 1]];
     }
 
-    // Vérifier si le joueur a encore des personnages vivants
+    // Vérifie s'il reste au moins un personnage vivant
     public boolean aEncoreDesPersonnagesVivants() {
         for (Personnage p : equipe) {
             if (p.estVivant()) {
@@ -108,28 +92,28 @@ public class Joueur {
         return false;
     }
 
-    // Afficher l'équipe
+    // Affiche l'équipe (pour info, avec KO ou HP)
     public void afficherEquipe() {
-        System.out.println("\n=== Équipe de " + nom + " ===");
+        System.out.println("\n=== Etat de l'equipe de " + nom + " ===");
         for (Personnage p : equipe) {
             p.afficherEtat();
         }
+        System.out.println("===============================");
     }
 
-    // Afficher l'équipe pour le choix de cible
-    public void afficherEquipePourCible() {
-        System.out.println("État de l'équipe de " + nom + " :");
-        for (Personnage p : equipe) {
-            p.afficherEtat();
+    // Affiche l'équipe avec un numero devant pour le choix
+    private void afficherEquipePourChoix(ArrayList<Personnage> liste) {
+        for (int i = 0; i < liste.size(); i++) {
+            System.out.print("[" + (i + 1) + "] ");
+            liste.get(i).afficherEtat();
         }
     }
 
-    // Getters
     public String getNom() {
         return nom;
     }
 
-    public Personnage[] getEquipe() {
+    public ArrayList<Personnage> getEquipe() {
         return equipe;
     }
 }
