@@ -17,8 +17,8 @@ public class Main
         joueur1.creerEquipe(scanner);
 
         System.out.print("\nNom du Joueur 2 : ");
-        String nomJ2 = scanner.nextLine();
-        Joueur joueur2 = new Joueur(nomJ2);
+        String nomJoueur2 = scanner.nextLine();
+        Joueur joueur2 = new Joueur(nomJoueur2);
         joueur2.creerEquipe(scanner);
 
         // Phase 2 : Boucle de combat
